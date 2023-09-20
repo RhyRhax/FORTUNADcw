@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale1.0">
+        <title>Crossword Puzzle</title>
+        <style>
+             body {
+                background: linear-gradient(67.6deg, rgb(225, 242, 254) -2.8%, rgb(193, 224, 250) 44.6%, rgb(19, 116, 197) 102.4%);
+             }
+            table{
+                border: 3px solid rgb(27, 179, 218);
+            }
+            header{
+                text-align: center;
+                padding: 10px;
+            }
+            h1{
+                font-family: sans-serif;
+                font-size: 30px;
+                color: azure;
+            }
+            th{
+                width:50px;
+                height:50px;
+                background: rgb(255, 0, 0, 0.37);
+                border: 1px solid rgb(175, 210, 255);
+                position: relative;
+                cursor: grab;
+            }
+           
+            .b{
+                background: rgb(12, 12, 12);
+                cursor: not-allowed;
+            }
+            .w{
+                background: white;
+            }
+            .w:hover {
+                background: rgba(247, 182, 182, 0.37);
+            }
+            th span{
+                font-size: 10px;
+                position: absolute;
+                top: 2px;
+                left: 2px;
+            }
+            th b{
+                font-size: 40px;
+                color: rgb(11, 73, 243);
+            }
+            button {
+                width: 200px;
+                height: 60px;
+                background: rgb(225, 160, 238);
+                cursor: pointer;
+                transition: 1s;
+                display: inline-block; 
+                margin: 20px; 
+                margin-left: 150px;
+            }
+            .container{
+                text-align: center;
+            }
+            button:hover{
+                background: rgb(29, 185, 185);
+                color: white;
+            }
+            section{
+                display: flex;
+            }
+            .across{
+                width: 25%;
+                background-color: rgb(173, 209, 209);
+                padding: 10px;
+                box-sizing: border-box;
+            }
+            .down{
+                width: 25%;
+                background-color: rgb(182, 215, 230);
+                padding: 10px;
+                box-sizing: border-box;
+            }
+            li{
+                list-style: none;
+                font-family: sans-serif;
+                font-weight: 900;
+                margin-left: -30px;
+            }
+            h2{
+                font-family: sans-serif;
+                border-bottom: 5px double black;
+                padding-left: 15px;
+            }
+        </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Crossword Puzzle</h1>
+    </header>
+
+    <section>
+        <table id="table" cellspacing="0"> </table>
+        <div class="down">
+            <h2>DOWN</h2>
+            <ul>
+                <li>1. It shows the place where you would click if you were to and it is connected directly to the mouse.</li>
+            </ul>
+            <ul>
+            <li> 2. When you change data back to its original form.</li>
+            </ul>
+            <ul>
+            <li>4. A place to find information after searching something.</li>
+            </ul>
+            <ul>
+            <li>6. A small thing that contains many programs and many functions put in this thing's memory that helps a certain device work.</li>
+            </ul>
+            <ul>
+            <li>7. It is sort of like a chip and it has tons of information that is coded.</li>
+            </ul>
+            <ul>
+            <li> 9. Letters, numbers, symbols, etc. that are used on a computer and are transmitted by certain electronic signals.</li>
+            </ul>
+        </div>
+        <div class="across">
+            <h2>ACROSS</h2>
+            <ul>
+                <li>3. A certain program that is able to process statements and code them.</li>
+                <li>5. Protecting and securing something on a device from others, normally with a password.</li>
+                <li>8. An error in a program that makes the program do weird things, sometimes harmful to your computer</li>
+                <li>10. A message sent to someone else without using an internet connection</li>
+            </ul>
+        </div>
+    </section>
+
+   
+    <button onclick="key_check()">CHECK</button>
+    <button onclick="color_clear()">WRONG CLEAR</button>
+</body>
+
+<script>
+//1=W
+//0=B
+  var values = [
+"bwbbbbbbbbbbbb",
+"bwbbbbbbbbbbbb",
+"bwbbbbbbbbbbbb",
+"bwbbbbwbbbbbbb",
+"wwwwwwwwbbbbbb",
+"bwbbbbwbwbbbbb",
+"bbbbbbwbwbbbbb",
+"bbwwwwwwwwwwbw",
+"bbbbwbwbwbbbbw",
+"bbbbwbwbwwwbbw",
+"bbbbwbwbwbbbbw",
+"bbbbbbwbwbwbbb",
+"bbbbbbwbwwwwwb",
+"bbbbbbbbbbwbbb",
+"bbbbbbbbbbwbbb"
+];
+  var ans_key = [
+"-B------------",
+"-U------------",
+"-T------------",
+"-T----D-------",
+"COMPILER------",
+"-N----C-D-----",
+"------R-A-----",
+"--ENCRYPTION-C",
+"----H-P-A----O",
+"----I-T-BUG--D",
+"----P-I-A----E",
+"------O-S-D---",
+"------N-EMAIL-",
+"----------T---",
+"----------A---"
+]
+;
+  var total_rows=values.length;
+  var total_cols=values.length;
+    var spans_value={"0,1":"1", "4,0": "3", "3,6": "2","5,8": "4","7,2": "5","7,4": "6","7,13": "7","9,8": "8","11,10": "9","12,8": "10"};
+    var current=null;
+        function createFrameBoxes() {
+            var boxes = "";
+            for (let i = 0; i < values.length; i++) {
+                boxes += "<tr>";
+                for (let j = 0; j < values[i].length; j++) {
+                    var s=spans_value[i+","+j]??"";
+                    boxes += `<th onclick='myclick(this)' row='${i}' col='${j}'' class="${values[i][j]}"><span>${s}</span><b></b></th>`;
+                }
+                boxes += "</tr>";
+            }
+            document.getElementById("table").innerHTML = boxes;
+        }
+
+        createFrameBoxes();
+
+        function myclick(box) {
+            if(box.classList.contains("w")){
+
+                var row=box.getAttribute('row');
+                var row=box.getAttribute('col');
+                if(current!=null){
+                    current.style.background="transparent";
+                }
+
+                current=box;
+                current.style.background="cyan";
+            }
+        }
+
+        document.body.onkeyup=function(event){
+            if(current!=null){
+
+                console.log(event);
+
+
+
+                if(event.keyCode>=37 && event.keyCode<=40){
+                    nextmover(event.keyCode);
+                }
+
+                if(event.keyCode>=65&&event.keyCode<=90){
+                    current.querySelector("b").innerHTML=event.key.toUpperCase();
+                    nextmover(39);
+                }
+
+                if(event.keyCode==8||event.keyCode==46){
+                    current.querySelector("b").innerHTML="";
+                }
+            }
+        }
+
+        function nextmover(code){
+
+            var row=parseInt(current.getAttribute("row"));
+            var col=parseInt(current.getAttribute("col"));
+
+            switch (code){
+                case 37: //left
+                    col = col == 0 ? total_cols-1 : col - 1;
+                    break;
+                case 38: //top
+                    row = row == 0 ? total_rows-1 : row - 1;
+                    break;
+                case 39: //right
+                    col = col == 12 ? total_cols-1 : col + 1;
+                    break;
+                case 40: //bottom
+                    row = row == 12 ? total_rows-1 : row + 1;
+                    break;
+            
+            default:
+                break;
+            }
+            if(current.classList.contains("w")){
+                current.style.background="transparent";
+            }
+            
+
+                current = document.querySelectorAll("tr")[row].querySelectorAll("th")[col];
+
+            if(current.classList.contains("b")){
+                nextmover(code);
+            }
+            else{
+                current.style.background="yellow";
+            }
+        }
+   
+
+        var red=[];
+        var green=[];
+
+        function key_check() {
+
+            red.splice(0);
+            green.splice(0);
+
+    var whites = document.querySelectorAll(".w");
+
+    whites.forEach(element => {
+        var text = element.querySelector("b").innerHTML;
+        
+        if (text.length > 0) {
+            var row = element.getAttribute("row");
+            var col = element.getAttribute("col");
+            console.log(row, col, text, ans_key[row][col]);
+
+           
+            if (text === ans_key[row][col]) { 
+                element.style.background = "green";
+                green.push(element);
+            } else {
+                element.style.background = "red";
+                red.push(element);
+            }
+        }
+
+    });
+
+    if(green.length==whites.length){
+        console.log("You Got IT!");
+    }
+}
+
+    function color_clear(){
+
+        red.forEach(element => {
+            elemet.style.background="transparent";
+            element.querySelector("b").innerHTML="";
+        });
+
+        green.forEach(element => {
+            elemet.style.background="transparent";
+        });
+
+        console.log("WRONG",red);
+        console.log("CORRECT",green);
+
+        red.splice(0);
+        green.splice(0);
+
+
+    }
+   </script>
+
+</html>
